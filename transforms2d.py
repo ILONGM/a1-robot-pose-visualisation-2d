@@ -33,8 +33,24 @@ class Pose2D:
         """Retourne la pose inverse : self = T_A<-B, retour = T_B<-A."""
         return matrix_to_pose(np.linalg.inv(self.matrix))
 
+    def transform_point(self, point):
+        """Exprime un point du repère enfant dans le repère parent.
 
-    
+        self = T_A<-B ; point exprimé en B -> retour exprimé en A.
+
+        Args:
+            point: array, liste ou tuple de forme (2,).
+
+        Returns:
+            np.ndarray: le point transformé, forme (2,).
+        """
+        point = np.asarray(point, dtype=float)
+        if point.shape != (2,):
+            raise ValueError("point must have shape (2,)")
+
+        point_homogene = np.append(point, 1.0)
+        resultat = self.matrix @ point_homogene
+        return resultat[:2]
 
 
 def normalize_angle(angle):
@@ -52,7 +68,8 @@ def matrix_to_pose(matrix):
     return Pose2D(x, y, theta)
 
 
-    
+
+
 
 if __name__ == "__main__":
     assert np.isclose(Pose2D(1.0, 2.0, 4*np.pi).theta, 0.0)  # theta doit devenir ~0
@@ -66,8 +83,14 @@ if __name__ == "__main__":
     assert np.allclose(Pose2D(1.0, 2.0, np.pi).matrix,Pose2D(1.0, 2.0, np.pi).compose(Pose2D(0.0, 0.0, 0)).matrix) and  np.allclose(Pose2D(1.0, 2.0, np.pi).matrix, Pose2D(0.0, 0.0, 0).compose(Pose2D(1.0, 2.0, np.pi)).matrix) # compose avec l'identité : doit donner la même pose
 
     resultat = Pose2D(1.0, 0.0, np.pi/2).compose(Pose2D(1.0, 0.0, 0.0))
-    print(resultat.x, resultat.y, resultat.theta)
+    assert np.isclose(resultat.x, 1.0)
+    assert np.isclose(resultat.y, 1.0)
+    assert np.isclose(resultat.theta, np.pi/2)
 
     test_pose = Pose2D(1.0, 2.0, np.pi/4)
     assert np.allclose(test_pose.compose(test_pose.inverse()).matrix, np.eye(3))
 
+    robot = Pose2D(2.0, 0.0, np.pi/2)
+    objet_monde = np.array([2.0, 3.0])
+    objet_robot = robot.inverse().transform_point(objet_monde)
+    assert np.allclose(objet_robot, [3.0, 0.0])
