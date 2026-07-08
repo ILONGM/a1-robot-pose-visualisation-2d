@@ -20,9 +20,10 @@ else moves — a live integration test of the whole transform chain.
 
 - `transforms2d.py` — a small, dependency-light `Pose2D` class
   (`compose`, `inverse`, `transform_point`), written from scratch with NumPy.
-  Runs its own test suite when executed directly.
 - `demo.py` — Matplotlib animation: trajectory, frame tree, and the
   fixed-point test.
+- `test_transforms2d.py` — pytest suite covering composition, inversion,
+  point transforms, and input validation.
 
 ## Run it
 
