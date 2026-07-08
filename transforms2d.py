@@ -71,26 +71,4 @@ def matrix_to_pose(matrix):
 
 
 
-if __name__ == "__main__":
-    assert np.isclose(Pose2D(1.0, 2.0, 4*np.pi).theta, 0.0)  # theta doit devenir ~0
-    assert isinstance(Pose2D(1, 2, 0).matrix, np.ndarray)  # entiers : doit marcher
-    try:
-        Pose2D("a", 2.0, 0.0)                 # doit lever TypeError
-        print("ERREUR : aurait dû planter !")
-    except TypeError:
-        print("OK : rejette bien les chaînes")
-
-    assert np.allclose(Pose2D(1.0, 2.0, np.pi).matrix,Pose2D(1.0, 2.0, np.pi).compose(Pose2D(0.0, 0.0, 0)).matrix) and  np.allclose(Pose2D(1.0, 2.0, np.pi).matrix, Pose2D(0.0, 0.0, 0).compose(Pose2D(1.0, 2.0, np.pi)).matrix) # compose avec l'identité : doit donner la même pose
-
-    resultat = Pose2D(1.0, 0.0, np.pi/2).compose(Pose2D(1.0, 0.0, 0.0))
-    assert np.isclose(resultat.x, 1.0)
-    assert np.isclose(resultat.y, 1.0)
-    assert np.isclose(resultat.theta, np.pi/2)
-
-    test_pose = Pose2D(1.0, 2.0, np.pi/4)
-    assert np.allclose(test_pose.compose(test_pose.inverse()).matrix, np.eye(3))
-
-    robot = Pose2D(2.0, 0.0, np.pi/2)
-    objet_monde = np.array([2.0, 3.0])
-    objet_robot = robot.inverse().transform_point(objet_monde)
-    assert np.allclose(objet_robot, [3.0, 0.0])
+  

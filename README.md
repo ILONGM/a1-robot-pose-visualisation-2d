@@ -27,7 +27,7 @@ else moves — a live integration test of the whole transform chain.
 ## Run it
 
 ```bash
-pip3 install numpy matplotlib
+pip3 install numpy matplotlib pytest
 python3 demo.py           # animation
-python3 transforms2d.py   # tests (silent = all green)
+pytest  # tests (silent = all green)
 ```
